@@ -6,10 +6,11 @@ import java.io.ObjectInputStream;
 import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
 
-import org.json.simple.JSONArray;
 import org.json.simple.parser.ParseException;
 
+import Clases.Cita;
 import Clases.Estudiante;
+import Clases.Estructuras.linkedlist.ListaEnlazada;
 
 import java.rmi.RemoteException;
 
@@ -55,19 +56,29 @@ public class Cliente {
         return new Estudiante(password, id, id, 0, false);
     }
 
-    public JSONArray readAppointments(String id) throws RemoteException, IOException, ParseException {
+    public ListaEnlazada<Cita> readAppointments(String id) throws RemoteException, IOException, ParseException {
         try {
             service = (InterfazRemota) Naming.lookup(uri);
             ByteArrayInputStream bs = new ByteArrayInputStream(service.readAppointments(id));
             ObjectInputStream is = new ObjectInputStream(bs);
-            JSONArray citasEstudiante = (JSONArray) is.readObject();
+            ListaEnlazada<Cita> listaCitas = (ListaEnlazada<Cita>) is.readObject();
             is.close();
-            return citasEstudiante;
+            return listaCitas;
 
         } catch (Exception e) {
             System.out.println(e.getMessage());
         }
         return null;
+    }
+
+    public void receiveAppointment(Cita citaCercana, int prioridad) {
+        try {
+            service = (InterfazRemota) Naming.lookup(uri);
+            service.receiveAppointment(citaCercana, prioridad);
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
     }
 
 }
