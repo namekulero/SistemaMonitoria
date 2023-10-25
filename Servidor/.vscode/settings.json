@@ -4,7 +4,9 @@
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
         "d:\\Downloads\\commons-codec-1.16.0.jar",
-        "d:\\Downloads\\json-simple-1.1.1.jar"
+        "d:\\Downloads\\json-simple-1.1.1.jar",
+        "c:\\Users\\santiago\\Downloads\\json-simple-1.1.1.jar",
+        "c:\\Users\\santiago\\Downloads\\commons-codec-1.16.0.jar"
     ],
     "java.dependency.packagePresentation": "hierarchical",
     "java.format.settings.url": ".vscode/java-formatter.xml",
