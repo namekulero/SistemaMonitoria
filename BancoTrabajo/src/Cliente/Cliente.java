@@ -19,7 +19,7 @@ public class Cliente {
         this.uri = "//" + this.ip + ":" + this.port + "/" + this.serviceName;
     }
 
-    public boolean deployDatosJSON() {
+    public boolean deploy() {
         try {
             System.setProperty("java.rmi.server.hostname", ip);
             InterfazRemota service = new Servicio();
