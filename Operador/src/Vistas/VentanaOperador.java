@@ -17,6 +17,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
+import javax.swing.plaf.basic.BasicArrowButton;
 
 public class VentanaOperador extends JFrame{
     
@@ -67,11 +68,14 @@ public class VentanaOperador extends JFrame{
         tabbedPaneGlobal.addTab("start", panelInicial);
 
         buttonRegistrarCita = new JButton("Registrar cita");
+        buttonRegistrarCita.setIcon(iconButton);
         panelInicial.add(buttonRegistrarCita);
         buttonRegistrarCita.setForeground(Color.WHITE);
+        buttonRegistrarCita.setContentAreaFilled(false);
         buttonRegistrarCita.setFont(fontButtons);
         buttonRegistrarCita.setSize(250, 80);
-        buttonRegistrarCita.setBackground(Color.RED);
+        buttonRegistrarCita.setText("getName()");
+        //buttonRegistrarCita.setBackground(Color.RED);
         buttonRegistrarCita.setLocation(300, 250);
         buttonRegistrarCita.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -99,7 +103,6 @@ public class VentanaOperador extends JFrame{
         panelRegistrarCita = new JPanel(null);
         panelRegistrarCita.setSize(1200, 600);
         tabbedPaneGlobal.addTab("3", panelRegistrarCita);
-
         initRegistrarCita();
     }
 
@@ -152,6 +155,9 @@ public class VentanaOperador extends JFrame{
         comboBoxDia.setLocation(340, 100);;
         panelRegistrarCita.add(comboBoxHora);
         comboBoxHora.setLocation(100, 200);
+        panelRegistrarCita.add(buttonCrearCita);
+        buttonCrearCita.setLocation(300, 300);
+
     }
     
     public void initFields(){
@@ -241,7 +247,29 @@ public class VentanaOperador extends JFrame{
         comboBoxHora = new JComboBox<>();
         comboBoxHora.setSize(200, 40);
         comboBoxHora.addItem(null);
+
+        for (int i = fechaActual.getHour() + 1; i <= 24; i++){
+            comboBoxHora.addItem(i + ":00");
         
+        
+        }
+
+
+        comboBoxDia.setFont(fontButtons);
+        comboBoxHora.setFont(fontButtons);
+        comboBoxMes.setFont(fontButtons);
+
+        buttonCrearCita = new JButton("Crear cita");
+        buttonCrearCita.setFont(fontButtons);
+        buttonCrearCita.setForeground(Color.WHITE);
+        buttonCrearCita.setSize(200, 40);
+        buttonCrearCita.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                crearCita();          
+            }
+        });
+
+
     }
 
     public void crearUsuario(){
@@ -250,6 +278,17 @@ public class VentanaOperador extends JFrame{
         // int semestre = (int) comboBoxSemestre.getSelectedItem();
         String documento = fieldDocumento.getText();
         boolean discapacitado = buttonIsDis.isEnabled();
+    }
+
+    public void crearCita(){
+        String mes = (String) comboBoxMes.getSelectedItem();
+        int numeroMes = 0;
+        for (int i = 0; i < this.meses.length; i++){
+            if (mes.equals(meses[i])){
+                numeroMes = i + 1;
+            }
+
+        }
     }
 
 
@@ -278,5 +317,7 @@ public class VentanaOperador extends JFrame{
     JComboBox<String> comboBoxMes;
     JComboBox<String> comboBoxDia;
     JComboBox<String> comboBoxHora;
-    String[] meses = {"Enero", "Febrero", " Marzo", "Abril",  "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
+    JButton buttonCrearCita;
+    ImageIcon iconButton = new ImageIcon(getClass().getResource("/Vistas/Icons/Buttons/ButtonMain.png"));
+    String[] meses = {"Enero", "Febrero", "Marzo", "Abril",  "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
 }

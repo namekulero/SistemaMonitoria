@@ -1,4 +1,6 @@
 
+import java.time.LocalDateTime;
+
 import Vistas.VentanaOperador;
 
 public class App {
@@ -6,6 +8,7 @@ public class App {
 
         VentanaOperador ventana = new VentanaOperador();
         ventana.setVisible(true);
+
 
         
     }
