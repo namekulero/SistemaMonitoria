@@ -36,11 +36,23 @@ public class Servicio extends UnicastRemoteObject implements InterfazRemota {
     }
 
     @Override
+    public boolean isStudentRegistered(String id) throws RemoteException, IOException, ParseException {
+        File archivo = new File("estudiantes\\e" + id + ".json");
+        String dir = archivo.getCanonicalPath();
+
+        try (FileReader reader = new FileReader(dir)) {
+            return true;
+        } catch (Exception e) {
+        }
+        return false;
+    }
+
+    @Override
     public byte[] readStudentUser(String id, String password) throws RemoteException, IOException, ParseException {
         JSONParser jsonParser = new JSONParser();
         password = DigestUtils.sha1Hex(password);
 
-        File archivo = new File("estudiantes\\" + id + ".json");
+        File archivo = new File("estudiantes\\e" + id + ".json");
         String dir = archivo.getCanonicalPath();
 
         try (FileReader reader = new FileReader(dir)) {
@@ -65,7 +77,7 @@ public class Servicio extends UnicastRemoteObject implements InterfazRemota {
     public void writeStudentUser(Estudiante estudiante, String password) throws IOException {
         password = DigestUtils.sha1Hex(password);
 
-        File archivo = new File("estudiantes\\" + estudiante.getId() + ".json");
+        File archivo = new File("estudiantes\\e" + estudiante.getId() + ".json");
         String dir = archivo.getCanonicalPath();
 
         JSONObject userObject = new JSONObject();
@@ -117,7 +129,10 @@ public class Servicio extends UnicastRemoteObject implements InterfazRemota {
             ListaEnlazada<Cita> listaCitas = new ListaEnlazada<>();
             arrayCitas.forEach(ci -> listaCitas.add(parseCitaObject((JSONObject) ci, id)));
             return listaCitas;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
+        return null;
     }
 
     private Cita parseCitaObject(JSONObject ci, String id) {
@@ -133,13 +148,16 @@ public class Servicio extends UnicastRemoteObject implements InterfazRemota {
 
         JSONArray arrayCitas = new JSONArray();
         Iterator<NodeInterface<Cita>> iterador = listaCitas.iterator();
-        while (iterador.hasNext()) {
-            Cita citaActual = iterador.next().getObject();
-            JSONObject objetoCita = new JSONObject();
-            objetoCita.put("id", citaActual.getCitaId());
-            objetoCita.put("fecha", citaActual.getDateTime());
-            arrayCitas.add(objetoCita);
+        if (listaCitas != null) {
+            while (iterador.hasNext()) {
+                Cita citaActual = iterador.next().getObject();
+                JSONObject objetoCita = new JSONObject();
+                objetoCita.put("id", citaActual.getCitaId());
+                objetoCita.put("fecha", citaActual.getDateTime());
+                arrayCitas.add(objetoCita);
+            }
         }
+        
         File archivo = new File("estudiantes\\e" + studentId + ".json");
         String dir = archivo.getCanonicalPath();
 

@@ -10,6 +10,8 @@ import Clases.Estudiante;
 
 public interface InterfazRemota extends Remote {
 
+    public boolean isStudentRegistered(String id) throws RemoteException, IOException, ParseException;
+
     public byte[] readStudentUser(String id, String password) throws RemoteException, IOException, ParseException;
 
     public void writeStudentUser(Estudiante estudiante, String password) throws RemoteException, IOException, ParseException;
