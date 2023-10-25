@@ -1,4 +1,6 @@
 import java.awt.Color;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.IOException;
 
 import javax.swing.ImageIcon;
@@ -11,7 +13,11 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.plaf.ColorUIResource;
 
+import Cliente.Cliente;
+
 public class Registro extends JFrame {
+    Cliente servicio;
+
     public Registro() throws IOException {
         InitComponents();
     }
@@ -68,6 +74,14 @@ public class Registro extends JFrame {
         registro.setForeground(Color.white);
         registro.setBounds(270, 430, 200, 50);
         principal.add(registro);
+        registro.addActionListener(new ActionListener() {
+
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                servicio.readStudentUser(id.getText(), password.getText());
+            }
+
+        });
 
     }
 
