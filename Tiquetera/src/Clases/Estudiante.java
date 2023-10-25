@@ -36,5 +36,5 @@ public class Estudiante implements Serializable {
     public boolean hasDiscapacidad() {
         return hasDiscapacidad;
     }
-    
+
 }

@@ -5,12 +5,13 @@ import java.io.Serializable;
 import Clases.Estructuras.interfaces.node.NodeInterface;
 
 public class Nodo<T> implements NodeInterface<T>, Serializable {
+    private static final long serialVersionUID = 103L;
     T objeto;
-    
+
     public Nodo() {
         objeto = null;
     }
-    
+
     public Nodo(T objeto) {
         this.objeto = objeto;
     }
@@ -22,7 +23,7 @@ public class Nodo<T> implements NodeInterface<T>, Serializable {
                 this.objeto = object;
                 return true;
             } catch (Exception e) {
-                
+
             }
         }
         return false;
@@ -39,7 +40,7 @@ public class Nodo<T> implements NodeInterface<T>, Serializable {
             try {
                 return objeto.toString().equals(object.toString());
             } catch (Exception e) {
-                
+
             }
         }
         return false;
@@ -48,11 +49,11 @@ public class Nodo<T> implements NodeInterface<T>, Serializable {
     @Override
     public Nodo<T> getClone() {
         try {
-            if(objeto != null) {
+            if (objeto != null) {
                 return (Nodo<T>) this.clone();
             }
         } catch (Exception e) {
-            
+
         }
         return null;
     }

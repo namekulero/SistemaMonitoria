@@ -58,9 +58,7 @@ public class PantallaTiquetera extends JFrame {
         panelPrincipal.add(panel);
 
         JLabel imagenLogo = new JLabel();
-        imagenLogo.setIcon(new ImageIcon(getClass().getResource("iconos/Logo (Custom).png")));
-        imagenLogo.setLayout(null);
-        imagenLogo.setVisible(true);
+        imagenLogo.setIcon(new ImageIcon(getClass().getResource("/iconos/Logo (Custom).png")));
         imagenLogo.setBounds(0, 0, 200, 100);
         panel.add(imagenLogo);
 

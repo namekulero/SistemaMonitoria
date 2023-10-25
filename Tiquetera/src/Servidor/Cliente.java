@@ -1,4 +1,4 @@
-package Cliente;
+package Servidor;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -47,13 +47,13 @@ public class Cliente {
             ByteArrayInputStream bs = new ByteArrayInputStream(service.readStudentUser(id, password));
             ObjectInputStream is = new ObjectInputStream(bs);
             Estudiante estudiante = (Estudiante) is.readObject();
+            System.out.println(estudiante.getId());
             is.close();
             return estudiante;
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
         }
-        return new Estudiante(password, id, id, 0, false);
+        return null;
     }
 
     public ListaEnlazada<Cita> readAppointments(String id) throws RemoteException, IOException, ParseException {
@@ -66,19 +66,19 @@ public class Cliente {
             return listaCitas;
 
         } catch (Exception e) {
-            System.out.println(e.getMessage());
         }
         return null;
     }
 
-    public void receiveAppointment(Cita citaCercana, int prioridad) {
+    public int receiveAppointment(Cita citaCercana, int prioridad) {
         try {
             service = (InterfazRemota) Naming.lookup(uri);
-            service.receiveAppointment(citaCercana, prioridad);
-
+            int turno = service.receiveAppointment(citaCercana, prioridad);
+            return turno;
         } catch (Exception e) {
-            System.out.println(e.getMessage());
+            e.printStackTrace();
         }
+        return 0;
     }
 
 }

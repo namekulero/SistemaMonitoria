@@ -1,4 +1,4 @@
-package Cliente;
+package Servidor;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -13,6 +13,6 @@ public interface InterfazRemota extends Remote {
 
     public byte[] readAppointments(String id) throws RemoteException, IOException, ParseException;
 
-    public void receiveAppointment(Cita cita, int prioridad) throws RemoteException;
+    public int receiveAppointment(Cita cita, int prioridad) throws RemoteException;
 
 }

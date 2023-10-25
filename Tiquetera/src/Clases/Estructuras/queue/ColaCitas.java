@@ -20,7 +20,7 @@ public class ColaCitas extends Cola<Cita> {
                 while (!cola2.isEmpty()) {
                     cola1.insert(cola2.extract());
                 }
-            } 
+            }
             while (!cola1.isEmpty()) {
                 insert(cola1.extract());
             }
@@ -38,6 +38,7 @@ public class ColaCitas extends Cola<Cita> {
         hour = Integer.valueOf(dateTime.substring(11, 12));
         minute = Integer.valueOf(dateTime.substring(14, 15));
         second = Integer.valueOf(dateTime.substring(17, 18));
+        System.out.println(year + " " + month + " " + day + " " + hour + " " + minute + " ");
         LocalDateTime fechaCita = LocalDateTime.of(year, month, day, hour, minute, second);
         return fechaCita.toEpochSecond(null) - fechaActual.toEpochSecond(null);
     }

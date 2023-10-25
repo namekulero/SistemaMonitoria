@@ -8,6 +8,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.util.Iterator;
 import java.util.Properties;
 
@@ -25,10 +26,11 @@ import Clases.Cita;
 import Clases.Estudiante;
 import Clases.Estructuras.interfaces.node.NodeInterface;
 import Clases.Estructuras.linkedlist.ListaEnlazada;
-import Cliente.Cliente;
+import Servidor.Cliente;
 
 public class PantallaRegistro extends JFrame {
     Cliente servicio;
+    int turn;
 
     public PantallaRegistro() throws IOException {
         Properties config = new Properties();
@@ -37,6 +39,7 @@ public class PantallaRegistro extends JFrame {
         String dir = archivo.getCanonicalPath();
 
         try (FileInputStream fin = new FileInputStream(new File(dir))) {
+
             config.load(fin);
             servicio = new Cliente((String) config.get("IP"), (String) config.get("PORT"), (String) config.get("SERVICENAME"));
         } catch (Exception e) {
@@ -61,7 +64,7 @@ public class PantallaRegistro extends JFrame {
         id.setBounds(270, 240, 200, 50);
         principal.add(id);
 
-        JTextField password = new JTextField(" ");
+        JTextField password = new JTextField();
         password.setLayout(null);
         password.setBounds(270, 340, 200, 50);
         principal.add(password);
@@ -82,14 +85,11 @@ public class PantallaRegistro extends JFrame {
         principal.add(panel);
 
         JLabel imagenLogo = new JLabel();
-        imagenLogo.setIcon(new ImageIcon(getClass().getResource("iconos/Logo (Custom).png")));
-        imagenLogo.setLayout(null);
-        imagenLogo.setVisible(true);
+        imagenLogo.setIcon(new ImageIcon(getClass().getResource("/iconos/Logo (Custom).png")));
         imagenLogo.setBounds(0, 0, 200, 100);
         panel.add(imagenLogo);
 
         JButton registro = new JButton("TERMINAR");
-        registro.setLayout(null);
         registro.setVisible(true);
         registro.setBackground(Color.red);
         registro.setForeground(Color.white);
@@ -109,15 +109,15 @@ public class PantallaRegistro extends JFrame {
                         while (iterador.hasNext()) {
                             Cita citaActual = iterador.next().getObject();
                             String fechaCita = citaActual.getDateTime();
-                            int year = Integer.valueOf(fechaCita.substring(0, 3));
-                            int month = Integer.valueOf(fechaCita.substring(5, 6));
-                            int day = Integer.valueOf(fechaCita.substring(8, 9));
-                            int hour = Integer.valueOf(fechaCita.substring(11, 12));
-                            int minute = Integer.valueOf(fechaCita.substring(14, 15));
-                            int second = Integer.valueOf(fechaCita.substring(17, 18));
+                            int year = Integer.valueOf(fechaCita.substring(0, 4));
+                            int month = Integer.valueOf(fechaCita.substring(5, 7));
+                            int day = Integer.valueOf(fechaCita.substring(8, 10));
+                            int hour = Integer.valueOf(fechaCita.substring(11, 13));
+                            int minute = Integer.valueOf(fechaCita.substring(14, 16));
+                            int second = Integer.valueOf(fechaCita.substring(17, 19));
                             LocalDateTime dateTime = LocalDateTime.of(year, month, day, hour, minute, second);
 
-                            long diferenciaEpoch = LocalDateTime.now().toEpochSecond(null) - dateTime.toEpochSecond(null);
+                            long diferenciaEpoch = dateTime.toEpochSecond(ZoneOffset.UTC) - LocalDateTime.now().toEpochSecond(ZoneOffset.UTC);
                             if (diferenciaEpoch > 0 && citaCercana == null) {
                                 menorDiferencia = diferenciaEpoch;
                                 citaCercana = citaActual;
@@ -135,7 +135,9 @@ public class PantallaRegistro extends JFrame {
                         } else if (estudiante.getSemestre() == 1) {
                             prioridad = 2;
                         }
-                        servicio.receiveAppointment(citaCercana, prioridad);
+                        turn = servicio.receiveAppointment(citaCercana, prioridad);
+                        new PantallaTurno(turn);
+                        dispose();
                     } catch (IOException | ParseException e1) {
                     }
                 }
@@ -143,6 +145,10 @@ public class PantallaRegistro extends JFrame {
 
         });
 
+    }
+
+    public int getTurn() {
+        return turn;
     }
 
     public static void main(String[] args) {

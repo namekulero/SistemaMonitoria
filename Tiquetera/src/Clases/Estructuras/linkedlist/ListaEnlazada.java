@@ -215,7 +215,8 @@ public class ListaEnlazada<T> implements LinkedListInterface<T>, Serializable {
         T[] arrRetorno = (T[]) new Object[n];
         if (size() >= n) {
             Iterator<NodeInterface<T>> iterador = this.iterator();
-            for (int i = 0; i < n; i++) { // Se recorre cada posición del arreglo, y solo se iteran las primeras n posiciones
+            for (int i = 0; i < n; i++) { // Se recorre cada posición del arreglo, y solo se iteran las primeras n
+                                          // posiciones
                 NodoListaEnlazada<T> nodo = (NodoListaEnlazada<T>) iterador.next();
                 arrRetorno[i] = nodo.getObject();
             }
@@ -252,7 +253,8 @@ public class ListaEnlazada<T> implements LinkedListInterface<T>, Serializable {
         Object[] endArray = new Object[n];
         NodoListaEnlazada<T> nodo = cola; // Se comienza a recorrer desde la cola
         if (size() >= n) { // Solo ejecuta la función si la lista es de igual o mayor tamaño al n ingresado
-            for (int i = (n - 1); i >= 0; i--) { // Se llena el arreglo desde la última posición hasta el inicio, con el fin de mantener el orden de los elementos
+            for (int i = (n - 1); i >= 0; i--) { // Se llena el arreglo desde la última posición hasta el inicio, con el fin de
+                                                 // mantener el orden de los elementos
                 endArray[i] = nodo.getObject(); // Se asigna el objeto del nodo a la posición i del arreglo
                 nodo = new NodoListaEnlazada<T>(getPrevious(nodo)); // Se crea un nuevo nodo con el objeto del nodo previo
             }
@@ -262,6 +264,7 @@ public class ListaEnlazada<T> implements LinkedListInterface<T>, Serializable {
 
     @Override
     public T pop() {
+        System.out.println(cabeza == null);
         NodoListaEnlazada<T> nodoCabeza = cabeza; // se guarda el nodo de cabeza
         cabeza = cabeza.getSiguiente(); // la cabeza se convierte en el siguiente
         return nodoCabeza.getObject(); // se elimina el nodo anterior
@@ -354,7 +357,7 @@ public class ListaEnlazada<T> implements LinkedListInterface<T>, Serializable {
                 add(arrFinal);
                 return true;
             } catch (Exception e) {
-                
+
             }
         }
         return false;
@@ -387,13 +390,14 @@ public class ListaEnlazada<T> implements LinkedListInterface<T>, Serializable {
     private boolean validSubList(NodeInterface<T> from, NodeInterface<T> to) {
         Iterator<NodeInterface<T>> iterador = iterator();
         boolean firstFrom = false; // Verifica que el nodo from esté antes del nodo to
-        boolean toFound = false;   // Verifica que el nodo to esté después del nodo from
+        boolean toFound = false; // Verifica que el nodo to esté después del nodo from
         while (iterador.hasNext()) {
             NodoListaEnlazada<T> nodo = (NodoListaEnlazada<T>) iterador.next();
             if (nodo.isEquals(from.getObject()) && !toFound) { // "Si el nodo actual es el nodo 'from' y aún no se ha encontrado el nodo 'to',
                 firstFrom = true; // "el nodo 'from' está antes que el nodo 'to'"
             }
-            if (nodo.isEquals(to.getObject()) && firstFrom) { // "Si el nodo 'from' está antes que el nodo 'to' y el nodo actual es el nodo 'to',
+            if (nodo.isEquals(to.getObject()) && firstFrom) { // "Si el nodo 'from' está antes que el nodo 'to' y el nodo actual es el nodo
+                                                              // 'to',
                 return true; // retorna true, verificando que la sublista es valida"
             }
         }
@@ -416,7 +420,8 @@ public class ListaEnlazada<T> implements LinkedListInterface<T>, Serializable {
     public boolean sortObjectsBySize() {
         if (size() == 1) {
             return true;
-        } if (size() == 0) {
+        }
+        if (size() == 0) {
             return false;
         }
         T[] objects = toArray();
