@@ -5,14 +5,14 @@ import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
 import Clases.Cita;
+import Clases.Estudiante;
 import Clases.Estructuras.interfaces.node.NodeInterface;
 import Clases.Estructuras.linkedlist.ListaEnlazada;
+import Clases.Estructuras.queue.ColaPrioridadCitas;
 
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Iterator;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.json.simple.JSONArray;
@@ -24,13 +24,14 @@ import java.io.FileReader;
 import java.io.FileWriter;
 
 public class Servicio extends UnicastRemoteObject implements InterfazRemota {
+    private ColaPrioridadCitas colaCitas = new ColaPrioridadCitas(4);
 
     protected Servicio() throws RemoteException {
         super();
     }
 
     @Override
-    public String[] readStudentUser(String id, String password) throws RemoteException, IOException, ParseException {
+    public byte[] readStudentUser(String id, String password) throws RemoteException, IOException, ParseException {
         JSONParser jsonParser = new JSONParser();
         password = DigestUtils.sha1Hex(password);
 
@@ -43,26 +44,32 @@ public class Servicio extends UnicastRemoteObject implements InterfazRemota {
             JSONObject usuario = (JSONObject) obj;
             String filePass = (String) usuario.get("password");
             if (filePass != null && filePass.equals(password)) {
-                String[] arrayNombre = new String[2];
-                arrayNombre[0] = (String) usuario.get("nombre");
-                arrayNombre[1] = (String) usuario.get("apellidos");
-                return arrayNombre;
+                Estudiante estudiante = new Estudiante((String) usuario.get("nombres"), (String) usuario.get("apellidos"), (String) usuario.get("id"),
+                        Integer.parseInt((String) usuario.get("semestre")), Boolean.parseBoolean((String) usuario.get("hasDiscapacidad")));
+                ByteArrayOutputStream boStream = new ByteArrayOutputStream();
+                ObjectOutputStream ooStream = new ObjectOutputStream(boStream);
+                ooStream.writeObject(estudiante);
+                ooStream.close();
+                return boStream.toByteArray();
             }
         }
-        return new String[0];
+        return null;
     }
 
     @Override
-    public void writeStudentUser(String id, String nombres, String apellidos, String password) throws IOException {
+    public void writeStudentUser(Estudiante estudiante, String password) throws IOException {
         password = DigestUtils.sha1Hex(password);
 
-        File archivo = new File("estudiantes\\" + id + ".json");
+        File archivo = new File("estudiantes\\" + estudiante.getId() + ".json");
         String dir = archivo.getCanonicalPath();
 
         JSONObject userObject = new JSONObject();
-        userObject.put("nombres", nombres);
-        userObject.put("apellidos", apellidos);
+        userObject.put("nombres", estudiante.getNombres());
+        userObject.put("apellidos", estudiante.getApellidos());
+        userObject.put("semestre", Integer.toString(estudiante.getSemestre()));
+        userObject.put("hasDiscapacidad", Boolean.toString(estudiante.hasDiscapacidad()));
         userObject.put("password", password);
+        userObject.put("citas", new JSONArray());
 
         try (FileWriter file = new FileWriter(dir)) {
             file.write(userObject.toJSONString());
@@ -152,8 +159,8 @@ public class Servicio extends UnicastRemoteObject implements InterfazRemota {
         Iterator<NodeInterface<Cita>> iterador = listaCitas.iterator();
         while (iterador.hasNext()) {
             Cita citaActual = iterador.next().getObject();
-            JSONObject objetoCita = new JSONObject();
             if (!citaActual.getCitaId().equals(appointmentId)) {
+                JSONObject objetoCita = new JSONObject();
                 objetoCita.put("id", citaActual.getCitaId());
                 objetoCita.put("fecha", citaActual.getDateTime());
                 arrayCitas.add(objetoCita);
@@ -174,6 +181,11 @@ public class Servicio extends UnicastRemoteObject implements InterfazRemota {
             file.write(usuario.toJSONString());
             file.flush();
         }
+    }
+
+    public void receiveAppointment(Cita cita, int prioridad) {
+        colaCitas.insert(cita, prioridad);
+        colaCitas.sort();
     }
 
 }
