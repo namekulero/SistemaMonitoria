@@ -190,12 +190,13 @@ public class Servicio extends UnicastRemoteObject implements InterfazRemota {
     }
 
     @Override
-    public void receiveAppointment(Cita cita, int prioridad) {
+    public int receiveAppointment(Cita cita, int prioridad) {
         cita.setTurno(turnoActual);
         colaCitas.insert(cita, prioridad);
         pantallaCola.updateQueueSize(colaCitas.size());
         turnoActual++;
         colaCitas.sort();
+        return cita.getTurno();
     }
 
     @Override
