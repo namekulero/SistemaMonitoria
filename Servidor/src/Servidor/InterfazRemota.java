@@ -5,6 +5,7 @@ import java.rmi.RemoteException;
 import java.io.IOException;
 import org.json.simple.parser.ParseException;
 
+import Clases.Cita;
 import Clases.Estudiante;
 
 public interface InterfazRemota extends Remote {
@@ -16,5 +17,13 @@ public interface InterfazRemota extends Remote {
     public byte[] readAppointments(String id) throws RemoteException, IOException, ParseException;
 
     public void writeAppointment(String appointmentId, String studentId, String dateTime) throws RemoteException, IOException, ParseException;
+
+    public void eraseAppointment(String appointmentId, String studentId) throws RemoteException, IOException, ParseException;
+    
+    public void receiveAppointment(Cita cita, int prioridad) throws RemoteException;
+
+    public int dequeueAppointment(String idModulo) throws RemoteException;
+
+    public String getNewId() throws RemoteException;
 
 }

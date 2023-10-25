@@ -7,6 +7,7 @@ public class Cita implements Serializable {
     String citaId;
     String estudianteId;
     String dateTime;
+    int turno;
 
     public Cita(String citaId, String estudianteId, String dateTime) {
         this.citaId = citaId;
@@ -24,5 +25,13 @@ public class Cita implements Serializable {
 
     public String getDateTime() {
         return dateTime;
+    }
+
+    public int getTurno() {
+        return turno;
+    }
+
+    public void setTurno(int turno) {
+        this.turno = turno;
     }
 }

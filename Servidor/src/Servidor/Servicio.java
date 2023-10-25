@@ -9,6 +9,7 @@ import Clases.Estudiante;
 import Clases.Estructuras.interfaces.node.NodeInterface;
 import Clases.Estructuras.linkedlist.ListaEnlazada;
 import Clases.Estructuras.queue.ColaPrioridadCitas;
+import Pantallas.PantallaCola;
 
 import java.rmi.server.UnicastRemoteObject;
 import java.util.Iterator;
@@ -25,9 +26,13 @@ import java.io.FileWriter;
 
 public class Servicio extends UnicastRemoteObject implements InterfazRemota {
     private ColaPrioridadCitas colaCitas = new ColaPrioridadCitas(4);
+    private int turnoActual = 1;
+    private int modulosActivos = 0;
+    private PantallaCola pantallaCola;
 
     protected Servicio() throws RemoteException {
         super();
+        pantallaCola = new PantallaCola();
     }
 
     @Override
@@ -153,6 +158,7 @@ public class Servicio extends UnicastRemoteObject implements InterfazRemota {
         }
     }
 
+    @Override
     public void eraseAppointment(String appointmentId, String studentId) throws RemoteException, IOException, ParseException {
         ListaEnlazada<Cita> listaCitas = readAppointmentsList(studentId);
         JSONArray arrayCitas = new JSONArray();
@@ -183,9 +189,29 @@ public class Servicio extends UnicastRemoteObject implements InterfazRemota {
         }
     }
 
+    @Override
     public void receiveAppointment(Cita cita, int prioridad) {
         colaCitas.insert(cita, prioridad);
+        pantallaCola.updateQueueSize(colaCitas.size());
+        cita.setTurno(turnoActual);
+        turnoActual++;
         colaCitas.sort();
+    }
+
+    @Override
+    public int dequeueAppointment(String idModulo) {
+        int turno = colaCitas.extract().getTurno();
+        pantallaCola.updateQueueSize(colaCitas.size());
+        Object[] fila = new Object[2];
+        fila[0] = turno; fila[1] = idModulo;
+        pantallaCola.receiveFila(fila);
+        return turno;
+    }
+
+    @Override
+    public String getNewId() throws RemoteException {
+        modulosActivos++;
+        return String.valueOf(modulosActivos);
     }
 
 }

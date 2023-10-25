@@ -1,23 +1,25 @@
-package Servidor;
+package Cliente;
 
 import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
 
-public class Servidor {
+import java.rmi.RemoteException;
 
+public class Cliente {
+    private InterfazRemota service;
     private String ip;
     private String port;
     private String serviceName;
     private String uri;
 
-    public Servidor(String ip, String port, String serviceName) {
+    public Cliente(String ip, String port, String serviceName) {
         this.ip = ip;
         this.port = port;
         this.serviceName = serviceName;
         this.uri = "//" + this.ip + ":" + this.port + "/" + this.serviceName;
     }
 
-    public boolean deploy() {
+    public boolean deployDatosJSON() {
         try {
             System.setProperty("java.rmi.server.hostname", ip);
             InterfazRemota service = new Servicio();
@@ -30,4 +32,21 @@ public class Servidor {
         return false;
     }
 
+    public int dequeueAppointment(String idModulo) throws RemoteException {
+        try {
+            service = (InterfazRemota) Naming.lookup(uri);
+            return service.dequeueAppointment(idModulo);
+        } catch (Exception e) {
+        }
+        return 0;
+    }
+
+    public String getNewId() {
+        try {
+            service = (InterfazRemota) Naming.lookup(uri);
+            return service.getNewId();
+        } catch (Exception e) {
+        }
+        return "";
+    }
 }
