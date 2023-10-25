@@ -1,4 +1,4 @@
-package Cliente;
+package Servidor;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;

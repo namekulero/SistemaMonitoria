@@ -2,7 +2,8 @@ package Pantallas;
 
 import javax.swing.*;
 
-import Cliente.Cliente;
+import Servidor.Cliente;
+
 import java.util.Properties;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -15,6 +16,10 @@ import java.io.File;
 public class PantallaModulo extends JFrame {
     String idModulo;
     Cliente cliente;
+
+    public static void main(String[] args) throws IOException {
+        new PantallaModulo();
+    }
     
     public PantallaModulo() throws IOException {
         Properties config = new Properties();
@@ -43,18 +48,18 @@ public class PantallaModulo extends JFrame {
         panelFondo.setLayout(null);
 
         JLabel labelNombre = new JLabel("Módulo:");
-        labelNombre.setBounds(15, 10, 100, 40);
+        labelNombre.setBounds(15, 5, 100, 40);
         panelFondo.add(labelNombre);
         JLabel labelNombre2 = new JLabel(idModulo);
-        labelNombre2.setBounds(115, 10, 50, 40);
+        labelNombre2.setBounds(70, 5, 50, 40);
         panelFondo.add(labelNombre2);
 
         JButton buttonDesencolar = new JButton("Desencolar");
-        buttonDesencolar.setBounds(120, 80, 110, 40);
+        buttonDesencolar.setBounds(110, 60, 110, 40);
         panelFondo.add(buttonDesencolar);
 
         JLabel labelTurno = new JLabel("Turno:");
-        labelTurno.setBounds(15, 140, 75, 40);
+        labelTurno.setBounds(15, 120, 75, 40);
         panelFondo.add(labelTurno);
         JLabel labelTurno2 = new JLabel();
 
@@ -68,7 +73,7 @@ public class PantallaModulo extends JFrame {
             }
         });
 
-        labelTurno2.setBounds(90, 140, 50, 40);
+        labelTurno2.setBounds(60, 120, 50, 40);
         panelFondo.add(labelTurno2);
 
         add(panelFondo);

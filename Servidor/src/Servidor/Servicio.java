@@ -25,16 +25,17 @@ import java.io.FileReader;
 import java.io.FileWriter;
 
 public class Servicio extends UnicastRemoteObject implements InterfazRemota {
-    private ColaPrioridadCitas colaCitas = new ColaPrioridadCitas(4);
-    private int turnoActual = 1;
-    private int modulosActivos = 0;
-    private PantallaCola pantallaCola;
+    private ColaPrioridadCitas colaCitas = new ColaPrioridadCitas(4); // Cola con los turnos de las siguientes citas
+    private int turnoActual = 0; // Valor del último turno dado
+    private int modulosActivos = 0; // Cantidad de BancoTrabajos conectados al RMI
+    private PantallaCola pantallaCola; // Pantalla con la cola de citas
 
     protected Servicio() throws RemoteException {
         super();
-        pantallaCola = new PantallaCola();
+        pantallaCola = new PantallaCola(); // Inicializa la pantalla con la cola
     }
 
+    // Método para buscar si existe un archivo con el estudiante registrado
     @Override
     public boolean isStudentRegistered(String id) throws RemoteException, IOException, ParseException {
         File archivo = new File("estudiantes\\e" + id + ".json");
@@ -47,6 +48,7 @@ public class Servicio extends UnicastRemoteObject implements InterfazRemota {
         return false;
     }
 
+    // Método para leer los datos almacenados sobre un estudiante y retornar un objeto Estudiante con tales datos
     @Override
     public byte[] readStudentUser(String id, String password) throws RemoteException, IOException, ParseException {
         JSONParser jsonParser = new JSONParser();
@@ -61,7 +63,7 @@ public class Servicio extends UnicastRemoteObject implements InterfazRemota {
             JSONObject usuario = (JSONObject) obj;
             String filePass = (String) usuario.get("password");
             if (filePass != null && filePass.equals(password)) {
-                Estudiante estudiante = new Estudiante((String) usuario.get("nombres"), (String) usuario.get("apellidos"), (String) usuario.get("id"),
+                Estudiante estudiante = new Estudiante((String) usuario.get("nombres"), (String) usuario.get("apellidos"), id,
                         Integer.parseInt((String) usuario.get("semestre")), Boolean.parseBoolean((String) usuario.get("hasDiscapacidad")));
                 ByteArrayOutputStream boStream = new ByteArrayOutputStream();
                 ObjectOutputStream ooStream = new ObjectOutputStream(boStream);
@@ -73,6 +75,7 @@ public class Servicio extends UnicastRemoteObject implements InterfazRemota {
         return null;
     }
 
+    // Método para escribir los datos de un estudiante
     @Override
     public void writeStudentUser(Estudiante estudiante, String password) throws IOException {
         password = DigestUtils.sha1Hex(password);
@@ -87,24 +90,22 @@ public class Servicio extends UnicastRemoteObject implements InterfazRemota {
         userObject.put("hasDiscapacidad", Boolean.toString(estudiante.hasDiscapacidad()));
         userObject.put("password", password);
         userObject.put("citas", new JSONArray());
-
         try (FileWriter file = new FileWriter(dir)) {
             file.write(userObject.toJSONString());
             file.flush();
         }
     }
 
+    // Método para leer las citas programadas de un estudiante (retorna un arreglo de bytes serializado)
     @Override
     public byte[] readAppointments(String id) throws RemoteException, IOException, ParseException {
         JSONParser jsonParser = new JSONParser();
         File archivo = new File("estudiantes\\e" + id + ".json");
         String dir = archivo.getCanonicalPath();
-
         try (FileReader reader = new FileReader(dir)) {
             Object obj = jsonParser.parse(reader);
             JSONObject objetoEstudiante = (JSONObject) obj;
             JSONArray arrayCitas = (JSONArray) objetoEstudiante.get("citas");
-
             ListaEnlazada<Cita> listaCitas = new ListaEnlazada<>();
             arrayCitas.forEach(ci -> listaCitas.add(parseCitaObject((JSONObject) ci, id)));
 
@@ -113,10 +114,14 @@ public class Servicio extends UnicastRemoteObject implements InterfazRemota {
             ooStream.writeObject(listaCitas);
             ooStream.close();
             return boStream.toByteArray();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
+        return null;
     }
 
-    public ListaEnlazada<Cita> readAppointmentsList(String id) throws RemoteException, IOException, ParseException {
+    // Método para leer las citas programadas de un cliente (retorna la ListaEnlazada directamente)
+    private ListaEnlazada<Cita> readAppointmentsList(String id) throws RemoteException, IOException, ParseException {
         JSONParser jsonParser = new JSONParser();
         File archivo = new File("estudiantes\\e" + id + ".json");
         String dir = archivo.getCanonicalPath();
@@ -135,11 +140,13 @@ public class Servicio extends UnicastRemoteObject implements InterfazRemota {
         return null;
     }
 
+    // Método para convertir un objeto JSON en un objeto Cita
     private Cita parseCitaObject(JSONObject ci, String id) {
         Cita nuevaCita = new Cita((String) ci.get("id"), id, (String) ci.get("fecha"));
         return nuevaCita;
     }
 
+    // Método para escribir una nueva cita para un estudiante
     @Override
     public void writeAppointment(String appointmentId, String studentId, String dateTime) throws RemoteException, IOException, ParseException {
         ListaEnlazada<Cita> listaCitas = readAppointmentsList(studentId);
@@ -157,7 +164,7 @@ public class Servicio extends UnicastRemoteObject implements InterfazRemota {
                 arrayCitas.add(objetoCita);
             }
         }
-        
+
         File archivo = new File("estudiantes\\e" + studentId + ".json");
         String dir = archivo.getCanonicalPath();
 
@@ -176,6 +183,7 @@ public class Servicio extends UnicastRemoteObject implements InterfazRemota {
         }
     }
 
+    // Método para borrar una cita asignada a un estudiante
     @Override
     public void eraseAppointment(String appointmentId, String studentId) throws RemoteException, IOException, ParseException {
         ListaEnlazada<Cita> listaCitas = readAppointmentsList(studentId);
@@ -207,13 +215,14 @@ public class Servicio extends UnicastRemoteObject implements InterfazRemota {
         }
     }
 
+    // Método para encolar a un estudiante
     @Override
     public int receiveAppointment(Cita cita, int prioridad) {
+        turnoActual++;
         cita.setTurno(turnoActual);
         colaCitas.insert(cita, prioridad);
         pantallaCola.updateQueueSize(colaCitas.size());
-        turnoActual++;
-        colaCitas.sort();
+        // colaCitas.sort();
         return cita.getTurno();
     }
 
@@ -222,7 +231,8 @@ public class Servicio extends UnicastRemoteObject implements InterfazRemota {
         int turno = colaCitas.extract().getTurno();
         pantallaCola.updateQueueSize(colaCitas.size());
         Object[] fila = new Object[2];
-        fila[0] = turno; fila[1] = idModulo;
+        fila[0] = turno;
+        fila[1] = idModulo;
         pantallaCola.receiveFila(fila);
         return turno;
     }
@@ -230,6 +240,7 @@ public class Servicio extends UnicastRemoteObject implements InterfazRemota {
     @Override
     public String getNewId() throws RemoteException {
         modulosActivos++;
+        System.out.println(modulosActivos);
         return String.valueOf(modulosActivos);
     }
 
