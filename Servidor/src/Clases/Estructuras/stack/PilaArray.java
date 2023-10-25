@@ -1,11 +1,11 @@
-package com.Clases.Estructuras.stack;
+package Clases.Estructuras.stack;
 
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-import com.Clases.Estructuras.interfaces.stack.StackInterface;
+import Clases.Estructuras.interfaces.stack.StackInterface;
 
 public class PilaArray<T> implements StackInterface<T> {
     private T[] arreglo;

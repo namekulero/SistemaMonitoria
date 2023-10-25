@@ -1,6 +1,6 @@
-package com.Clases.Estructuras.queue;
+package Clases.Estructuras.queue;
 
-import com.Clases.Estructuras.interfaces.queue.QueueInterface;
+import Clases.Estructuras.interfaces.queue.QueueInterface;
 
 public class ColaEstatica<T> implements QueueInterface<T> {
     private int maximo = 0;

@@ -1,4 +1,4 @@
-package com.Clases.Estructuras.interfaces.queue;
+package Clases.Estructuras.interfaces.queue;
 
 public interface QueueInterface<T> {
     public boolean clear();

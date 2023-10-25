@@ -1,4 +1,4 @@
-package com.Clases.Estructuras.interfaces.stack;
+package Clases.Estructuras.interfaces.stack;
 
 public interface StackInterface<T> {
     public boolean clear();

@@ -1,8 +1,8 @@
-package com.Clases.Estructuras.linkedlist;
+package Clases.Estructuras.linkedlist;
 
-import com.Clases.Estructuras.interfaces.linkedlist.LinkedListInterface;
-import com.Clases.Estructuras.interfaces.node.NodeInterface;
-import com.Clases.Estructuras.node.NodoDobleEnlazado;
+import Clases.Estructuras.interfaces.linkedlist.LinkedListInterface;
+import Clases.Estructuras.interfaces.node.NodeInterface;
+import Clases.Estructuras.node.NodoDobleEnlazado;
 
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;

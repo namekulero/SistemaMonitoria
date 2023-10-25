@@ -1,8 +1,8 @@
-package com.Clases.Estructuras.interfaces.linkedlist;
+package Clases.Estructuras.interfaces.linkedlist;
 
 import java.util.Iterator;
 
-import com.Clases.Estructuras.interfaces.node.NodeInterface;
+import Clases.Estructuras.interfaces.node.NodeInterface;
 
 /**
  * Interface for Linked List

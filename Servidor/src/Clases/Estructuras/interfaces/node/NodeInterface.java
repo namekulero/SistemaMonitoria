@@ -1,4 +1,4 @@
-package com.Clases.Estructuras.interfaces.node;
+package Clases.Estructuras.interfaces.node;
 
 /**
  * Interface for Node. 

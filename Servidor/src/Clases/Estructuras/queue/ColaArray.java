@@ -1,4 +1,4 @@
-package com.Clases.Estructuras.queue;
+package Clases.Estructuras.queue;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -6,7 +6,7 @@ import java.util.logging.Logger;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 
-import com.Clases.Estructuras.interfaces.queue.QueueInterface;
+import Clases.Estructuras.interfaces.queue.QueueInterface;
 
 public class ColaArray<T> implements QueueInterface<T> {
     private int tamano = 0;

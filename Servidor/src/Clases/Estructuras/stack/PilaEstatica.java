@@ -1,9 +1,9 @@
-package com.Clases.Estructuras.stack;
+package Clases.Estructuras.stack;
 
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectOutputStream;
 
-import com.Clases.Estructuras.interfaces.stack.StackInterface;
+import Clases.Estructuras.interfaces.stack.StackInterface;
 
 public class PilaEstatica<T> implements StackInterface<T> {
     private int maximo;

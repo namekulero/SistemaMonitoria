@@ -1,8 +1,8 @@
-package com.Clases.Estructuras.tree;
+package Clases.Estructuras.tree;
 
-import com.Clases.Estructuras.linkedlist.ListaEnlazada;
-import com.Clases.Estructuras.node.NodoArbolBinario;
-import com.Clases.Estructuras.queue.Cola;
+import Clases.Estructuras.linkedlist.ListaEnlazada;
+import Clases.Estructuras.node.NodoArbolBinario;
+import Clases.Estructuras.queue.Cola;
 
 public class ArbolBinario<T> {
     NodoArbolBinario<T> raiz = null;

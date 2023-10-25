@@ -1,4 +1,4 @@
-package com.Clases.Estructuras.node;
+package Clases.Estructuras.node;
 
 public class NodoArbolBinario<T> extends Nodo<T> {
     private NodoArbolBinario<T> subDerecha = null;

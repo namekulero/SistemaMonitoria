@@ -1,4 +1,4 @@
-package com.Clases.Estructuras.node;
+package Clases.Estructuras.node;
 
 public class NodoListaEnlazada<T> extends Nodo<T> {
     NodoListaEnlazada<T> siguiente;
