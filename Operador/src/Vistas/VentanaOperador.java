@@ -2,9 +2,17 @@ package Vistas;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.rmi.RemoteException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.YearMonth;
+import java.util.Properties;
+import org.apache.commons.codec.digest.DigestUtils;
+
+import Clases.Cita;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
@@ -12,6 +20,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 import javax.swing.JTabbedPane;
@@ -19,8 +28,13 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.plaf.basic.BasicArrowButton;
 
+import Servidor.Cliente;
+import Servidor.Servicio;
+
 public class VentanaOperador extends JFrame{
     
+    Cliente client;
+    String idActual;
 
     public VentanaOperador(){
         setDefaultCloseOperation(EXIT_ON_CLOSE);
@@ -30,7 +44,25 @@ public class VentanaOperador extends JFrame{
         setLocationRelativeTo(null);
         initComponents();
 
-        
+
+        try {
+            initClient();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void initClient() throws IOException{
+        Properties config = new Properties();
+
+        File archivo = new File("config.properties");
+        String dir = archivo.getCanonicalPath();
+
+        try (FileInputStream fin = new FileInputStream(new File(dir))) {
+            config.load(fin);
+            client = new Cliente((String) config.get("IP"), (String) config.get("PORT"), (String) config.get("SERVICENAME"));
+        } catch (Exception e) {
+        }
     }
 
     public void initComponents(){
@@ -54,6 +86,7 @@ public class VentanaOperador extends JFrame{
          */
         fontButtons = new Font("Roboto", 0, 20);
         backColor = new Color(245, 245, 245);
+        upbColor = new Color(238, 28, 37);
         //
 
         tabbedPaneGlobal = new JTabbedPane();
@@ -68,28 +101,24 @@ public class VentanaOperador extends JFrame{
         tabbedPaneGlobal.addTab("start", panelInicial);
 
         buttonRegistrarCita = new JButton("Registrar cita");
-        buttonRegistrarCita.setIcon(iconButton);
         panelInicial.add(buttonRegistrarCita);
         buttonRegistrarCita.setForeground(Color.WHITE);
-        buttonRegistrarCita.setContentAreaFilled(false);
         buttonRegistrarCita.setFont(fontButtons);
         buttonRegistrarCita.setSize(250, 80);
-        buttonRegistrarCita.setText("getName()");
-        //buttonRegistrarCita.setBackground(Color.RED);
+        buttonRegistrarCita.setBackground(upbColor);
         buttonRegistrarCita.setLocation(300, 250);
         buttonRegistrarCita.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 tabbedPaneGlobal.setSelectedIndex(1);
             }
         });
-
-
+        
         buttonCancelarCita = new JButton("Cancelar cita");
         panelInicial.add(buttonCancelarCita);
         buttonCancelarCita.setForeground(Color.WHITE);
         buttonCancelarCita.setFont(fontButtons);
         buttonCancelarCita.setSize(250, 80);
-        buttonCancelarCita.setBackground(Color.RED);
+        buttonCancelarCita.setBackground(upbColor);
         buttonCancelarCita.setLocation(650, 250);
 
         panelIngresarUsuario = new JPanel(null);
@@ -107,9 +136,7 @@ public class VentanaOperador extends JFrame{
     }
 
     public void initRegistrarCita(){
- 
         initFields();
-
         JLabel label = new JLabel("Consultar usuario en la base de datos");
         label.setFont(fontButtons);
         label.setForeground(Color.BLACK);
@@ -131,8 +158,12 @@ public class VentanaOperador extends JFrame{
         panelIngresarUsuario.add(button);
         button.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tabbedPaneGlobal.setSelectedIndex(2);
-                
+                if (!fieldID1.getText().isBlank()){
+                    tabbedPaneGlobal.setSelectedIndex(2);
+                    idActual = fieldID1.getText();
+                } else {
+                    generarAlerta();
+                }
             }
         });
 
@@ -149,18 +180,14 @@ public class VentanaOperador extends JFrame{
         panelRegistrarUsuario.add(buttonRegistrarUsuario);
         buttonRegistrarUsuario.setLocation(500, 300);
 
-        panelRegistrarCita.add(comboBoxMes);
-        comboBoxMes.setLocation(100, 100);
-        panelRegistrarCita.add(comboBoxDia);
-        comboBoxDia.setLocation(340, 100);;
-        panelRegistrarCita.add(comboBoxHora);
-        comboBoxHora.setLocation(100, 200);
-        panelRegistrarCita.add(buttonCrearCita);
-        buttonCrearCita.setLocation(300, 300);
-
     }
     
     public void initFields(){
+        buttonBack = new JButton("Volver");
+        buttonBack.setSize(250, 50);
+        buttonBack.setForeground(Color.WHITE);
+        buttonBack.setBackground(upbColor);
+
         fieldID1 = new JTextField("Ingresar id");
         fieldID1.setSize(200, 40);
         fieldID1.setForeground(Color.BLACK);
@@ -177,7 +204,6 @@ public class VentanaOperador extends JFrame{
         for (int i = 1; i<= 10; i++){
             comboBoxSemestre.addItem(i);
         }
-
         fieldNombres.setSize(250, 40);
         fieldApellidos.setSize(250, 40);
         fieldDocumento.setSize(250, 40);
@@ -201,15 +227,17 @@ public class VentanaOperador extends JFrame{
         buttonRegistrarUsuario = new JButton("Registrar");
         buttonRegistrarUsuario.setSize(250, 50);
         buttonRegistrarUsuario.setForeground(Color.WHITE);
-        buttonRegistrarUsuario.setBackground(Color.RED);
+        buttonRegistrarUsuario.setBackground(upbColor);
         buttonRegistrarUsuario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                tabbedPaneGlobal.setSelectedIndex(3);
-                /**
-                 * 
-                 * Registrar usuario
-                 */
-                crearUsuario();
+                if (fieldNombres.getText().isBlank() || fieldApellidos.getText().isBlank() || comboBoxSemestre.getSelectedItem() == null ||
+                    fieldDocumento.getText().isBlank()){
+                    generarAlerta();
+                } else {
+                    tabbedPaneGlobal.setSelectedIndex(3);
+                    crearUsuario();
+                }
+                
             }
         });
 
@@ -217,67 +245,94 @@ public class VentanaOperador extends JFrame{
     }
 
     public void initDateButtons(){
+        //Seleccionar Mes
         LocalDateTime fechaActual = LocalDateTime.now();
         comboBoxMes = new JComboBox<>();
         comboBoxMes.setSize(200, 40);
-        
         comboBoxMes.addItem(null);
+        //Seleccionar Dia
+        comboBoxDia = new JComboBox<>();
+        comboBoxDia.setSize(200, 40);
+        comboBoxDia.addItem(null);
+        //Seleccionar Hora
+        comboBoxHora = new JComboBox<>();
+        comboBoxHora.setSize(200, 40);
+        comboBoxHora.addItem(null);
+        //Llenar meses
         for (int i = fechaActual.getMonthValue() - 1; i < meses.length; i++){
             comboBoxMes.addItem(meses[i]);
         }
-
         comboBoxMes.addActionListener(new java.awt.event.ActionListener() {
+            //Llenar demas campos acorde al mes
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 comboBoxDia.removeAllItems();
+                comboBoxHora.removeAllItems();
                 if (comboBoxMes.getSelectedItem() != null){
                     YearMonth mes = YearMonth.of(fechaActual.getYear(), comboBoxMes.getSelectedIndex());
                     int inicio = (comboBoxMes.getSelectedItem() != meses[fechaActual.getMonthValue()-1]) ? 1 : fechaActual.getDayOfMonth();
                     comboBoxDia.addItem(null);
                     for (int i = inicio; i <= mes.lengthOfMonth(); i++){
-                        comboBoxDia.addItem(i + "");
+                        comboBoxDia.addItem(i);
                     }
+                    
+
+                    comboBoxHora.addItem(null);
+                    for (int i = 8; i < 20; i++){
+                        if (i < 10){
+                            comboBoxHora.addItem("0" + i);
+                        } else {
+                            comboBoxHora.addItem(i + "");
+                        }
+                        
+                    }
+
                 }              
             }
         });
 
-        comboBoxDia = new JComboBox<>();
-        comboBoxDia.setSize(200, 40);
-        comboBoxDia.addItem(null);
-        
-        comboBoxHora = new JComboBox<>();
-        comboBoxHora.setSize(200, 40);
-        comboBoxHora.addItem(null);
-
-        for (int i = fechaActual.getHour() + 1; i <= 24; i++){
+        for (int i = fechaActual.getHour() + 1; i <= 20; i++){
             comboBoxHora.addItem(i + ":00");
-        
-        
         }
-
 
         comboBoxDia.setFont(fontButtons);
         comboBoxHora.setFont(fontButtons);
         comboBoxMes.setFont(fontButtons);
 
+        panelRegistrarCita.add(comboBoxMes);
+        comboBoxMes.setLocation(100, 100);
+        panelRegistrarCita.add(comboBoxDia);
+        comboBoxDia.setLocation(340, 100);;
+        panelRegistrarCita.add(comboBoxHora);
+        comboBoxHora.setLocation(100, 200);
+        panelRegistrarCita.add(buttonCrearCita);
+        buttonCrearCita.setLocation(340, 300);
+
+
         buttonCrearCita = new JButton("Crear cita");
         buttonCrearCita.setFont(fontButtons);
         buttonCrearCita.setForeground(Color.WHITE);
+        buttonCrearCita.setBackground(upbColor);
         buttonCrearCita.setSize(200, 40);
         buttonCrearCita.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                crearCita();          
+                if (comboBoxDia.getSelectedItem() != null && comboBoxMes.getSelectedItem() != null && comboBoxHora.getSelectedItem() != null){
+                    crearCita();
+                } else {
+                    generarAlerta();
+                }
+                
             }
         });
-
-
     }
 
     public void crearUsuario(){
         String nombres = fieldNombres.getText();
         String apellidos = fieldApellidos.getText();
-        // int semestre = (int) comboBoxSemestre.getSelectedItem();
+        int semestre = (int) comboBoxSemestre.getSelectedItem();
         String documento = fieldDocumento.getText();
         boolean discapacitado = buttonIsDis.isEnabled();
+        
+        
     }
 
     public void crearCita(){
@@ -287,10 +342,18 @@ public class VentanaOperador extends JFrame{
             if (mes.equals(meses[i])){
                 numeroMes = i + 1;
             }
-
         }
+        String idCita = DigestUtils.sha1Hex(LocalDateTime.now().toString());
+        String hora = ((String) comboBoxHora.getSelectedItem()).substring(0, 1);
+        int numHora = Integer.parseInt(hora);
+        LocalDateTime dateTimeCita = LocalDateTime.of(LocalDateTime.now().getYear(), numeroMes, (int)comboBoxDia.getSelectedItem(), numHora, 0);
+        Cita nuevaCita = new Cita(idCita, idActual, dateTimeCita.toString());
+        
     }
 
+    public void generarAlerta(){
+        JOptionPane.showMessageDialog(null, "Debe llenar todos los campos.", "Error", JOptionPane.PLAIN_MESSAGE);
+    }
 
     //Inicializacion de componentes
     JPanel navBar;
@@ -303,9 +366,10 @@ public class VentanaOperador extends JFrame{
     JButton buttonCancelarCita;
     JLabel logoUpb;
     Font fontButtons;
+    Color backColor;
+    Color upbColor;
     JTabbedPane tabbedPaneGlobal;
     JTabbedPane tabbedPaneRegistrar;
-    Color backColor;
     JTextField fieldNombres;
     JTextField fieldApellidos;
     JTextField fieldID2;
@@ -315,9 +379,10 @@ public class VentanaOperador extends JFrame{
     JTextField fieldID1;
     JButton buttonRegistrarUsuario;
     JComboBox<String> comboBoxMes;
-    JComboBox<String> comboBoxDia;
+    JComboBox<Integer> comboBoxDia;
     JComboBox<String> comboBoxHora;
     JButton buttonCrearCita;
-    ImageIcon iconButton = new ImageIcon(getClass().getResource("/Vistas/Icons/Buttons/ButtonMain.png"));
+    JButton buttonBack;
     String[] meses = {"Enero", "Febrero", "Marzo", "Abril",  "Mayo", "Junio", "Julio", "Agosto", "Septiembre", "Octubre", "Noviembre", "Diciembre"};
+
 }
