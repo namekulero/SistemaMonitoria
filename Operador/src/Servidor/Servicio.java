@@ -50,7 +50,7 @@ public class Servicio extends UnicastRemoteObject  implements InterfazRemota {
     }
 
     @Override
-    public void receiveAppointment(Cita cita, int prioridad) throws RemoteException {
+    public int receiveAppointment(Cita cita, int prioridad) throws RemoteException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'receiveAppointment'");
     }
@@ -65,6 +65,12 @@ public class Servicio extends UnicastRemoteObject  implements InterfazRemota {
     public String getNewId() throws RemoteException {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'getNewId'");
+    }
+
+    @Override
+    public boolean isStudentRegistered(String id) throws RemoteException, IOException, ParseException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'isStudentRegistered'");
     }
     
 }

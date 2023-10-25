@@ -10,7 +10,7 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 public class ListaEnlazada<T> implements LinkedListInterface<T>, Serializable {
-    private static final long serialVersionUID = 612L;
+    private static final long serialVersionUID = 102L;
     public NodoListaEnlazada<T> cabeza;
     public NodoListaEnlazada<T> cola;
     public NodoListaEnlazada<T> inode;

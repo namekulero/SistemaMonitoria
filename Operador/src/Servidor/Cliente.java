@@ -1,10 +1,13 @@
 package Servidor;
 
+import java.io.ByteArrayInputStream;
+import java.io.ObjectInputStream;
 import java.rmi.Naming;
 import java.rmi.registry.LocateRegistry;
 
 import Clases.Cita;
 import Clases.Estudiante;
+import Clases.Estructuras.linkedlist.ListaEnlazada;
 
 import java.rmi.RemoteException;
 
@@ -66,6 +69,39 @@ public class Cliente {
             service = (InterfazRemota) Naming.lookup(uri);
             service.writeStudentUser(newUser, password);
         } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public boolean isDataBase(String id){
+        try {
+            service = (InterfazRemota) Naming.lookup(uri);
+            return service.isStudentRegistered(id);
+        } catch (Exception e) {
+        }
+        return false;
+    }
+
+    public ListaEnlazada<Cita> leerCitasUsuario(String id){
+        try {
+            service = (InterfazRemota) Naming.lookup(uri);
+            byte[] array = service.readAppointments(id);
+            ByteArrayInputStream baInput = new ByteArrayInputStream(array);
+            ObjectInputStream oInput = new ObjectInputStream(baInput);
+            return (ListaEnlazada<Cita>) oInput.readObject();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return null;
+        }
+        
+    }
+
+    public void cancelarCita(String citaId, String studentId){
+        try {
+            service = (InterfazRemota) Naming.lookup(uri);
+            service.eraseAppointment(citaId, studentId);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
         }
     }
 }

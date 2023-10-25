@@ -10,6 +10,8 @@ import Clases.Estudiante;
 
 public interface InterfazRemota extends Remote {
 
+    public boolean isStudentRegistered(String id) throws RemoteException, IOException, ParseException;
+
     public byte[] readStudentUser(String id, String password) throws RemoteException, IOException, ParseException;
 
     public void writeStudentUser(Estudiante estudiante, String password) throws RemoteException, IOException, ParseException;
@@ -20,7 +22,7 @@ public interface InterfazRemota extends Remote {
 
     public void eraseAppointment(String appointmentId, String studentId) throws RemoteException, IOException, ParseException;
     
-    public void receiveAppointment(Cita cita, int prioridad) throws RemoteException;
+    public int receiveAppointment(Cita cita, int prioridad) throws RemoteException;
 
     public int dequeueAppointment(String idModulo) throws RemoteException;
 

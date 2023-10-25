@@ -5,6 +5,7 @@ import java.io.Serializable;
 import Clases.Estructuras.interfaces.node.NodeInterface;
 
 public class Nodo<T> implements NodeInterface<T>, Serializable {
+    private static final long serialVersionUID = 103L;
     T objeto;
     
     public Nodo() {

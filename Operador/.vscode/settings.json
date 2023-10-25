@@ -5,5 +5,6 @@
         "lib/**/*.jar",
         "d:\\Downloads\\json-simple-1.1.1.jar",
         "d:\\Downloads\\commons-codec-1.16.0.jar"
-    ]
+    ],
+    "java.debug.settings.onBuildFailureProceed": true
 }
