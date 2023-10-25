@@ -20,7 +20,7 @@ public interface InterfazRemota extends Remote {
 
     public void eraseAppointment(String appointmentId, String studentId) throws RemoteException, IOException, ParseException;
     
-    public int receiveAppointment(Cita cita, int prioridad) throws RemoteException;
+    public void receiveAppointment(Cita cita, int prioridad) throws RemoteException;
 
     public int dequeueAppointment(String idModulo) throws RemoteException;
 
