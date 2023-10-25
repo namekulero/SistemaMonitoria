@@ -1,5 +1,12 @@
+
+import Vistas.VentanaOperador;
+
 public class App {
     public static void main(String[] args) throws Exception {
-        System.out.println("Hello, World!");
+
+        VentanaOperador ventana = new VentanaOperador();
+        ventana.setVisible(true);
+
+        
     }
 }
