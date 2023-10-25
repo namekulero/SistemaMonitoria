@@ -18,7 +18,7 @@ public class Servicio extends UnicastRemoteObject implements InterfazRemota {
     protected Servicio() throws RemoteException {
         super();
     }
-    
+
     @Override
     public String readStudentUser(String id, String password) throws RemoteException, IOException, ParseException {
         JSONParser jsonParser = new JSONParser();
@@ -55,6 +55,18 @@ public class Servicio extends UnicastRemoteObject implements InterfazRemota {
             file.write(userObject.toJSONString());
             file.flush();
         }
+    }
+
+    @Override
+    public String readAppointment(String id) throws RemoteException, IOException, ParseException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'readAppointment'");
+    }
+
+    @Override
+    public void writeAppointment(String appointmentId, String studentId, String dateTime) throws RemoteException, IOException, ParseException {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'writeAppointment'");
     }
 
 }

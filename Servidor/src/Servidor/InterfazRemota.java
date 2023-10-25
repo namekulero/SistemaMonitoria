@@ -11,4 +11,8 @@ public interface InterfazRemota extends Remote {
 
     public void writeStudentUser(String id, String nombres, String apellidos, String password) throws RemoteException, IOException, ParseException;
 
+    public String readAppointment(String id) throws RemoteException, IOException, ParseException;
+
+    public void writeAppointment(String appointmentId, String studentId, String dateTime) throws RemoteException, IOException, ParseException;
+
 }
